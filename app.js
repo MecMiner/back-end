@@ -1,11 +1,10 @@
 const express = require('express')
 const cors = require('cors');
-const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const app = express();
 
 const Usuario = require('./models/Usuario');
-const Respotas = require('./models/Respostas');
+const Respostas = require('./models/Respostas');
 const Desafio = require('./models/Desafio');
 const Desafio2 = require('./models/Desafio2');
 const Desafio3e4 = require('./models/Desafio3e4');
@@ -41,6 +40,22 @@ app.get('/', async (req, res) => {
     })
 })
 
+app.post('/setPontos', verifyToken, async (req, res) =>{
+    const {pontos, iddesafio} = req.body;
+    const idusuario = req.user.id;
+    await Respostas.update({pontos},{where: {iddesafio, idusuario: idusuario }}).then(() => {
+        return res.json({
+            error: false,
+            mensagem: "valor inserido"
+        });
+    }).catch((error) => {
+        return res.status(400).json({
+            error: true,
+            mensagem: error
+        })
+    });   
+}) 
+
 app.post('/verify-token', (req, res) => {
     const token = req.headers.authorization;
 
@@ -74,7 +89,7 @@ app.get('/desafio', async (req, res) => {
 
 app.get('/desafio1/:id', async (req, res) => {
     const { id } = req.params;
-    await Desafio.findOne({where: {iddesafio: id}}).then((dataDesafio) => {
+    await Desafio.findOne({ where: { iddesafio: id } }).then((dataDesafio) => {
         return res.json({
             erro: false,
             dataDesafio
@@ -105,46 +120,36 @@ app.get('/desafio2', async (req, res) => {
 app.get('/respostas/:id', verifyToken, async (req, res) => {
     const { id } = req.params;
     const idusuario = req.user.id;
-
-
-    try {
-        const dataRespostas = await Respotas.findOne({
-            where: {
+    await Respostas.findOne({
+        where: {
+            iddesafio: id,
+            idusuario: idusuario,
+        },
+    }).then(async (response) => {
+        console.log(response);
+        if(!response){
+            const dataRespostas = await Respostas.create({
                 iddesafio: id,
                 idusuario: idusuario,
-            },
-        });
-
-        if (!dataRespostas) {
-            dataRespostas = await Respotas.create({
-                iddesafio: id,
-                idusuario: idusuario,
-                respostanivel1: "",
-                respostanivel2: "",
-                respostanivel3: "",
-                respostanivel4: "",
-                statusNivel1: 0,
-                statusNivel2: 0,
-                statusNivel3: 0,
-                StatusNivel4: 0,
-                pontos: 0,
-                xp: 0,
+            })
+            return res.json({
+                erro: true,
+                dataRespostas: dataRespostas,
+            })
+        } else {
+            return res.json({
+                erro: false,
+                response,
             })
         }
-
-        console.log(dataRespostas);
-        return res.json({
-            erro: false,
-            dataRespostas,
-        });
-    } catch (error) {
-        return res.status(500).json({
+    }).catch(() => {
+        return res.status(400).json({
             erro: true,
-            mensagem: 'Erroa ao busca respostas',
+            mensagem: "Desafio não encontrado"
         })
-    }
-
+    })
 })
+
 
 
 app.post('/login', async (req, res) => {
@@ -174,7 +179,7 @@ app.post('/login', async (req, res) => {
 
         // Gera o token de autenticação
         const token = jwt.sign({ id: user.id, email: user.email }, chaveToken, { expiresIn: '1h' });
-        const respostas = await Respotas.findAll({ where: { idusuario: user.id } })
+        const respostas = await Respostas.findAll({ where: { idusuario: user.id } })
         // Retorna o token como resposta
         console.log(token);
         res.status(200).json({ token, user: { name: user.nome }, respostas });
@@ -183,35 +188,6 @@ app.post('/login', async (req, res) => {
         res.status(500).json({ message: 'Erro ao processar a requisição' });
     }
 });
-
-/* app.post('/setPoint/:id', verifyToken, async (req, res) => {
-    const { id } = req.params;
-    const idusuario = req.user.id;
-    const {pontos} = req.body
-
-    try {
-        const dataRespostas = await Respotas.update({
-            where: {
-                iddesafio: id,
-                idusuario: idusuario,
-            },
-        });
-
-        console.log(dataRespostas);
-        return res.json({
-            erro: false,
-            dataRespostas,
-        });
-    } catch (error) {
-        return res.status(500).json({
-            erro: true,
-            mensagem: 'Erroa ao busca respostas',
-        })
-    }
-
-
-
-}) */
 
 //Faz alteração na tabela de acordo com as models
 //Usuario.sync({alter: true});
