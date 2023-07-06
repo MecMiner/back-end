@@ -11,10 +11,6 @@ const Respostas = db.define('Respostas', {
     primaryKey: true,
     allowNull: true
   },
-  respostanivel1: {
-    type: DataTypes.STRING(45),
-    allowNull: true
-  },
   respostanivel2: {
     type: DataTypes.TEXT('medium'),
     allowNull: true
@@ -24,10 +20,6 @@ const Respostas = db.define('Respostas', {
     allowNull: true
   },
   respostanivel4: {
-    type: DataTypes.STRING(45),
-    allowNull: true
-  },
-  statusNivel1: {
     type: DataTypes.STRING(45),
     allowNull: true
   },
@@ -48,6 +40,18 @@ const Respostas = db.define('Respostas', {
     allowNull: true
   },
   xp: {
+    type: DataTypes.INTEGER,
+    allowNull: true
+  },
+  bomDesempenho: {
+    type: DataTypes.INTEGER,
+    allowNull: true
+  },
+  otimoDesempenho: {
+    type: DataTypes.INTEGER,
+    allowNull: true
+  },
+  colaboracao: {
     type: DataTypes.INTEGER,
     allowNull: true
   }
