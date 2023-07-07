@@ -40,10 +40,10 @@ app.get('/', async (req, res) => {
     })
 })
 
-app.post('/setPontos', verifyToken, async (req, res) =>{
-    const {pontos, iddesafio} = req.body;
+app.post('/setPontos', verifyToken, async (req, res) => {
+    const { pontos, iddesafio } = req.body;
     const idusuario = req.user.id;
-    await Respostas.update({pontos},{where: {iddesafio, idusuario: idusuario }}).then(() => {
+    await Respostas.update({ pontos }, { where: { iddesafio, idusuario: idusuario } }).then(() => {
         return res.json({
             error: false,
             mensagem: "valor inserido"
@@ -53,8 +53,8 @@ app.post('/setPontos', verifyToken, async (req, res) =>{
             error: true,
             mensagem: error
         })
-    });   
-}) 
+    });
+})
 
 app.post('/verify-token', (req, res) => {
     const token = req.headers.authorization;
@@ -127,7 +127,7 @@ app.get('/respostas/:id', verifyToken, async (req, res) => {
         },
     }).then(async (response) => {
         console.log(response);
-        if(!response){
+        if (!response) {
             const dataRespostas = await Respostas.create({
                 iddesafio: id,
                 idusuario: idusuario,
@@ -141,6 +141,86 @@ app.get('/respostas/:id', verifyToken, async (req, res) => {
                 erro: false,
                 response,
             })
+        }
+    }).catch(() => {
+        return res.status(400).json({
+            erro: true,
+            mensagem: "Desafio não encontrado"
+        })
+    })
+})
+
+app.post('/respostas/:id', verifyToken, async (req, res) => {
+    const { id } = req.params;
+    const idusuario = req.user.id;
+    const { pontos, xp, bom, otimo, colaboracao, zerar, resposta2, resposta3, resposta4 } = req.body;
+    await Respostas.findOne({
+        where: {
+            iddesafio: id,
+            idusuario: idusuario,
+        },
+    }).then(async (response) => {
+        console.log(response);
+        if (!response) {
+            const dataRespostas = await Respostas.create({
+                iddesafio: id,
+                idusuario: idusuario,
+            })
+            return res.json({
+                erro: true,
+                dataRespostas: dataRespostas,
+            })
+        } else {
+            response.xp += xp;
+            response.bomDesempenho += bom;
+            response.otimoDesempenho += otimo;
+            response.colaboracao += colaboracao;
+            response.respostanivel2 = resposta2;
+            response.respostanivel3 = resposta3;
+            response.respostanivel4 = resposta4;
+            if (zerar) {
+                response.pontos = parseInt(pontos);
+                response.save();
+                await Respostas.update(response, {
+                    where: {
+                        iddesafio: id,
+                        idusuario: idusuario,
+                    },
+                }).then(() => {
+                    return res.json({
+                        error: false,
+                        mensagem: "valor inserido e alterado"
+
+                    });
+                }).catch((e) => {
+                    return res.json({
+                        error: true,
+                        mensagem: "valor não inserido"
+                    });
+                })
+            } else {
+                response.pontos += pontos;
+                response.save()
+                await Respostas.update(
+                    response,
+                    {
+                        where: {
+                            iddesafio: id,
+                            idusuario: idusuario,
+                        },
+                    }).then(() => {
+                        return res.json({
+                            error: false,
+                            mensagem: "valor inserido"
+
+                        });
+                    }).catch((e) => {
+                        return res.json({
+                            error: true,
+                            mensagem: "valor não inserido"
+                        });
+                    })
+            }
         }
     }).catch(() => {
         return res.status(400).json({
