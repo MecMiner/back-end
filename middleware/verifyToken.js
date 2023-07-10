@@ -9,7 +9,7 @@ const verifyToken = (req, res, next) => {
   
     // Verifique se o token está presente
     if (!token) {
-      return res.status(401).json({ message: 'Token de autenticação não fornecido' });
+      return res.status(401).json({ error: true, message: 'Token de autenticação não fornecido' });
     }
   
     try {
@@ -24,7 +24,7 @@ const verifyToken = (req, res, next) => {
       next();
     } catch (error) {
         console.log('token invalido')
-      return res.status(401).json({ message: 'Token de autenticação inválido' });
+      return res.status(401).json({error: true, message: 'Token de autenticação inválido' });
     }
   };
 

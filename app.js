@@ -102,8 +102,9 @@ app.get('/desafio1/:id', async (req, res) => {
     })
 })
 
-app.get('/desafio2', async (req, res) => {
-    await Desafio2.findOne().then((dataDesafio) => {
+app.get('/desafio2/:id', async (req, res) => {
+    const { id } = req.params;
+    await Desafio2.findOne({ where: { iddesafio: id } }).then((dataDesafio) => {
         return res.json({
             erro: false,
             dataDesafio
@@ -153,7 +154,7 @@ app.get('/respostas/:id', verifyToken, async (req, res) => {
 app.post('/respostas/:id', verifyToken, async (req, res) => {
     const { id } = req.params;
     const idusuario = req.user.id;
-    const { pontos, xp, bom, otimo, colaboracao, zerar, resposta2, resposta3, resposta4 } = req.body;
+    const { coin, xp, bomDesempenho, otimoDesempenho, colaboracao, zerar, resposta2, resposta3, resposta4 } = req.body;
     await Respostas.findOne({
         where: {
             iddesafio: id,
@@ -172,14 +173,14 @@ app.post('/respostas/:id', verifyToken, async (req, res) => {
             })
         } else {
             response.xp += xp;
-            response.bomDesempenho += bom;
-            response.otimoDesempenho += otimo;
-            response.colaboracao += colaboracao;
+            response.bomDesempenho = bomDesempenho ? response.bomDesempenho + 1: response.bomDesempenho;
+            response.otimoDesempenho = otimoDesempenho ? response.otimoDesempenho + 1: response.otimoDesempenho;
+            response.colaboracao = colaboracao ? response.colaboracao + 1: response.colaboracao;
             response.respostanivel2 = resposta2;
             response.respostanivel3 = resposta3;
             response.respostanivel4 = resposta4;
             if (zerar) {
-                response.pontos = parseInt(pontos);
+                response.pontos = parseInt(coin);
                 response.save();
                 await Respostas.update(response, {
                     where: {
@@ -199,7 +200,7 @@ app.post('/respostas/:id', verifyToken, async (req, res) => {
                     });
                 })
             } else {
-                response.pontos += pontos;
+                response.pontos += parseInt(coin);
                 response.save()
                 await Respostas.update(
                     response,
