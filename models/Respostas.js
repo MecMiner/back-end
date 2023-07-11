@@ -24,16 +24,37 @@ const Respostas = db.define('Respostas', {
     allowNull: true
   },
   statusNivel2: {
-    type: DataTypes.INTEGER,
-    allowNull: true
+    type: DataTypes.TEXT('medium'),
+    allowNull: true,
+    get() {
+      const value = this.getDataValue('statusNivel2');
+      return value ? JSON.parse(value) : null;
+    },
+    set(value) {
+      this.setDataValue('statusNivel2', JSON.stringify(value));
+    },
   },
   statusNivel3: {
-    type: DataTypes.INTEGER,
-    allowNull: true
+    type: DataTypes.TEXT('medium'),
+    allowNull: true,
+    get() {
+      const value = this.getDataValue('statusNivel3');
+      return value ? JSON.parse(value) : null;
+    },
+    set(value) {
+      this.setDataValue('statusNivel3', JSON.stringify(value));
+    },
   },
   statusNivel4: {
-    type: DataTypes.INTEGER,
-    allowNull: true
+    type: DataTypes.TEXT('medium'),
+    allowNull: true,
+    get() {
+      const value = this.getDataValue('statusNivel4');
+      return value ? JSON.parse(value) : null;
+    },
+    set(value) {
+      this.setDataValue('statusNivel4', JSON.stringify(value));
+    },
   },
   pontos: {
     type: DataTypes.INTEGER,

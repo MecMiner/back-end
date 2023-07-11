@@ -154,7 +154,7 @@ app.post('/respostas/:id', verifyToken, async (req, res) => {
     const { id } = req.params;
     const idusuario = req.user.id;
     const { coin, xp, bomDesempenho, otimoDesempenho, colaboracao, zerar, resposta2, resposta3, resposta4,statusNivel2, statusNivel3,statusNivel4 } = req.body;
-    console.log(resposta2);
+    console.log(statusNivel2);
     await Respostas.findOne({
         where: {
             iddesafio: id,
@@ -171,19 +171,33 @@ app.post('/respostas/:id', verifyToken, async (req, res) => {
                 dataRespostas: dataRespostas,
             })
         } else {
-            response.pontos = parseInt(coin);
-            response.xp = xp;
             response.bomDesempenho = bomDesempenho ? response.bomDesempenho + 1: response.bomDesempenho;
             response.otimoDesempenho = otimoDesempenho ? response.otimoDesempenho + 1: response.otimoDesempenho;
             response.colaboracao = colaboracao ? response.colaboracao + 1: response.colaboracao;
-            response.respostanivel2 = resposta2;
-            response.respostanivel3 = resposta3;
-            response.respostanivel4 = resposta4;
-            response.statusNivel2 = statusNivel2 ? response.statusNivel2 : parseInt(statusNivel2);
-            response.statusNivel3 = statusNivel3 ? response.statusNivel3 : parseInt(statusNivel3);
-            response.statusNivel4 = statusNivel4 ? response.statusNivel4 : parseInt(statusNivel4);
-            response.pontos += parseInt(coin);
+
+            if(zerar){
+                response.respostanivel2 = resposta2;
+                response.respostanivel3 = resposta3;
+                response.respostanivel4 = resposta4;
+                response.statusNivel2 = statusNivel2;
+                response.statusNivel3 = statusNivel3;
+                response.statusNivel4 = statusNivel4;
+                response.pontos = coin;
+                response.xp = xp;
+            } else {
+                response.pontos = coin ? parseInt(coin) : response.pontos;
+                response.xp = xp ? parseInt(xp): response.pontos;
+                response.respostanivel2 = resposta2 ? resposta2 : response.respostanivel2;
+                response.respostanivel3 = resposta3 ? resposta3 : response.respostanivel3;;
+                response.respostanivel4 = resposta4 ? resposta4 : response.respostanivel4;;
+                response.statusNivel2 = statusNivel2 ? statusNivel2 : response.statusNivel2;
+                response.statusNivel3 = statusNivel3 ? statusNivel3 : response.statusNivel3;
+                response.statusNivel4 = statusNivel4 ? statusNivel4 : response.statusNivel4;
+            }
+            
+            
             response.save()
+            console.log(response);
             await Respostas.update(
                 response,
                 {
