@@ -2,59 +2,59 @@ const {Sequelize, DataTypes } = require('sequelize');
 const db = require('./db');
 
 const DesafioNivel2 = db.define('DesafioNivel2', {
-  iddesafio2: {
+  iddesafio: {
     type: DataTypes.INTEGER,
     primaryKey: true
   },
-  idexemploNivel2: {
+  idexemploNivel: {
     type: DataTypes.INTEGER,
     allowNull: true
   },
-  dadosProj2: {
+  dadosProj: {
     type: DataTypes.TEXT('long'),
     allowNull: true
   },
-  descProblema2: {
+  descProblema: {
     type: DataTypes.TEXT('long'),
     allowNull: true
   },
-  nomeProjeto2: {
+  nomeProjeto: {
     type: DataTypes.STRING(100),
     allowNull: true
   },
-  contextoProblema2: {
+  contextoProblema: {
     type: DataTypes.TEXT('long'),
     allowNull: true
   },
-  imagemProb2: {
+  imagemProb: {
     type: DataTypes.TEXT('medium'),
     allowNull: true
   },
-  materialComplementar2: {
+  materialComplementar: {
     type: DataTypes.TEXT('medium'),
     allowNull: true
   },
-  solucao2: {
+  solucao: {
     type: DataTypes.TEXT('long'),
     allowNull: true
   },
-  etapasSolucao2: {
+  etapasSolucao: {
     type: DataTypes.TEXT('long'),
     allowNull: true
   },
-  dica2: {
+  dica: {
     type: DataTypes.TEXT('medium'),
     allowNull: true
   },
-  dicaColega2: {
+  dicaColega: {
     type: DataTypes.TEXT('medium'),
     allowNull: true
   },
-  resultado2: {
+  resultado: {
     type: DataTypes.TEXT('long'),
     allowNull: true
   },
-  imagemResul2: {
+  imagemResul: {
     type: DataTypes.TEXT('medium'),
     allowNull: true
   }

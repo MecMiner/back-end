@@ -127,7 +127,6 @@ app.get('/respostas/:id', verifyToken, async (req, res) => {
             idusuario: idusuario,
         },
     }).then(async (response) => {
-        console.log(response);
         if (!response) {
             const dataRespostas = await Respostas.create({
                 iddesafio: id,
@@ -154,14 +153,14 @@ app.get('/respostas/:id', verifyToken, async (req, res) => {
 app.post('/respostas/:id', verifyToken, async (req, res) => {
     const { id } = req.params;
     const idusuario = req.user.id;
-    const { coin, xp, bomDesempenho, otimoDesempenho, colaboracao, zerar, resposta2, resposta3, resposta4 } = req.body;
+    const { coin, xp, bomDesempenho, otimoDesempenho, colaboracao, zerar, resposta2, resposta3, resposta4,statusNivel2, statusNivel3,statusNivel4 } = req.body;
+    console.log(resposta2);
     await Respostas.findOne({
         where: {
             iddesafio: id,
             idusuario: idusuario,
         },
     }).then(async (response) => {
-        console.log(response);
         if (!response) {
             const dataRespostas = await Respostas.create({
                 iddesafio: id,
@@ -172,17 +171,22 @@ app.post('/respostas/:id', verifyToken, async (req, res) => {
                 dataRespostas: dataRespostas,
             })
         } else {
-            response.xp += xp;
+            response.pontos = parseInt(coin);
+            response.xp = xp;
             response.bomDesempenho = bomDesempenho ? response.bomDesempenho + 1: response.bomDesempenho;
             response.otimoDesempenho = otimoDesempenho ? response.otimoDesempenho + 1: response.otimoDesempenho;
             response.colaboracao = colaboracao ? response.colaboracao + 1: response.colaboracao;
             response.respostanivel2 = resposta2;
             response.respostanivel3 = resposta3;
             response.respostanivel4 = resposta4;
-            if (zerar) {
-                response.pontos = parseInt(coin);
-                response.save();
-                await Respostas.update(response, {
+            response.statusNivel2 = statusNivel2 ? response.statusNivel2 : parseInt(statusNivel2);
+            response.statusNivel3 = statusNivel3 ? response.statusNivel3 : parseInt(statusNivel3);
+            response.statusNivel4 = statusNivel4 ? response.statusNivel4 : parseInt(statusNivel4);
+            response.pontos += parseInt(coin);
+            response.save()
+            await Respostas.update(
+                response,
+                {
                     where: {
                         iddesafio: id,
                         idusuario: idusuario,
@@ -190,7 +194,7 @@ app.post('/respostas/:id', verifyToken, async (req, res) => {
                 }).then(() => {
                     return res.json({
                         error: false,
-                        mensagem: "valor inserido e alterado"
+                        mensagem: "valor inserido"
 
                     });
                 }).catch((e) => {
@@ -199,29 +203,6 @@ app.post('/respostas/:id', verifyToken, async (req, res) => {
                         mensagem: "valor não inserido"
                     });
                 })
-            } else {
-                response.pontos += parseInt(coin);
-                response.save()
-                await Respostas.update(
-                    response,
-                    {
-                        where: {
-                            iddesafio: id,
-                            idusuario: idusuario,
-                        },
-                    }).then(() => {
-                        return res.json({
-                            error: false,
-                            mensagem: "valor inserido"
-
-                        });
-                    }).catch((e) => {
-                        return res.json({
-                            error: true,
-                            mensagem: "valor não inserido"
-                        });
-                    })
-            }
         }
     }).catch(() => {
         return res.status(400).json({
@@ -235,7 +216,6 @@ app.post('/respostas/:id', verifyToken, async (req, res) => {
 
 app.post('/login', async (req, res) => {
     const { email, senha } = req.body;
-    console.log(req.body);
 
     try {
         // Encontra o usuário no banco de dados com base no email fornecido

@@ -24,15 +24,15 @@ const Respostas = db.define('Respostas', {
     allowNull: true
   },
   statusNivel2: {
-    type: DataTypes.STRING(45),
+    type: DataTypes.INTEGER,
     allowNull: true
   },
   statusNivel3: {
-    type: DataTypes.STRING(45),
+    type: DataTypes.INTEGER,
     allowNull: true
   },
-  StatusNivel4: {
-    type: DataTypes.STRING(45),
+  statusNivel4: {
+    type: DataTypes.INTEGER,
     allowNull: true
   },
   pontos: {
