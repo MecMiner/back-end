@@ -11,6 +11,10 @@ const Respostas = db.define('Respostas', {
     primaryKey: true,
     allowNull: true
   },
+  nivel :{
+    type: DataTypes.INTEGER,
+    allowNull: true
+  },
   respostanivel2: {
     type: DataTypes.TEXT('medium'),
     allowNull: true
@@ -80,5 +84,5 @@ const Respostas = db.define('Respostas', {
   tableName: 'respostas',
   timestamps: false
 });
-//Respostas.sync({alter: true});
+Respostas.sync({alter: true});
 module.exports = Respostas;
