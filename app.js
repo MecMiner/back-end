@@ -131,6 +131,32 @@ app.get('/respostas/:id', verifyToken, async (req, res) => {
             const dataRespostas = await Respostas.create({
                 iddesafio: id,
                 idusuario: idusuario,
+                statusNivel2: {
+                    jogou: false,
+                    corrigido: false,
+                    certo: false,
+                    erros: 0
+                },
+                statusNivel3: {
+                    jogou: false,
+                    corrigido: false,
+                    certo: false,
+                    erros: 0
+                },
+                statusNivel4: {
+                    jogou: false,
+                    corrigido: false,
+                    certo: false,
+                    erros: 0
+                },
+                respostanivel2: "",
+                respostanivel3: "",
+                respostanivel4: "",
+                pontos: 0,
+                xp: 0,
+                bomDesempenho: 0,
+                otimoDesempenho: 0,
+                colaboracao: 0
             })
             return res.json({
                 erro: true,
