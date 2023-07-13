@@ -84,5 +84,5 @@ const Respostas = db.define('Respostas', {
   tableName: 'respostas',
   timestamps: false
 });
-Respostas.sync({alter: true});
+//Respostas.sync({alter: true});
 module.exports = Respostas;

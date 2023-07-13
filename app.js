@@ -117,6 +117,22 @@ app.get('/desafio2/:id', async (req, res) => {
     })
 })
 
+app.get('/desafio3/:id', async (req, res) => {
+    const { id } = req.params;
+    await Desafio3e4.findOne({ where: { iddesafio: id } }).then((dataDesafio) => {
+        return res.json({
+            erro: false,
+            dataDesafio
+        })
+    }).catch(() => {
+        return res.status(400).json({
+            erro: true,
+            mensagem: "Desafio não encontrado"
+        })
+    })
+})
+
+
 
 app.get('/respostas/:id', verifyToken, async (req, res) => {
     const { id } = req.params;
@@ -154,6 +170,7 @@ app.get('/respostas/:id', verifyToken, async (req, res) => {
                 respostanivel4: "",
                 pontos: 0,
                 xp: 0,
+                nivel: 0,
                 bomDesempenho: 0,
                 otimoDesempenho: 0,
                 colaboracao: 0
@@ -179,7 +196,7 @@ app.get('/respostas/:id', verifyToken, async (req, res) => {
 app.post('/respostas/:id', verifyToken, async (req, res) => {
     const { id } = req.params;
     const idusuario = req.user.id;
-    const { coin, xp, bomDesempenho, otimoDesempenho, colaboracao, zerar, resposta2, resposta3, resposta4,statusNivel2, statusNivel3,statusNivel4 } = req.body;
+    const { pontos, xp, bomDesempenho, otimoDesempenho, colaboracao, zerar, resposta2, resposta3, resposta4,statusNivel2, statusNivel3,statusNivel4, nivel } = req.body;
     console.log(statusNivel2);
     await Respostas.findOne({
         where: {
@@ -188,38 +205,26 @@ app.post('/respostas/:id', verifyToken, async (req, res) => {
         },
     }).then(async (response) => {
         if (!response) {
-            const dataRespostas = await Respostas.create({
-                iddesafio: id,
-                idusuario: idusuario,
-            })
             return res.json({
                 erro: true,
-                dataRespostas: dataRespostas,
+                message: 'Dados não encontrado',
             })
         } else {
             response.bomDesempenho = bomDesempenho ? response.bomDesempenho + 1: response.bomDesempenho;
             response.otimoDesempenho = otimoDesempenho ? response.otimoDesempenho + 1: response.otimoDesempenho;
             response.colaboracao = colaboracao ? response.colaboracao + 1: response.colaboracao;
-
-            if(zerar){
-                response.respostanivel2 = resposta2;
-                response.respostanivel3 = resposta3;
-                response.respostanivel4 = resposta4;
-                response.statusNivel2 = statusNivel2;
-                response.statusNivel3 = statusNivel3;
-                response.statusNivel4 = statusNivel4;
-                response.pontos = coin;
-                response.xp = xp;
-            } else {
-                response.pontos = coin ? parseInt(coin) : response.pontos;
-                response.xp = xp ? parseInt(xp): response.pontos;
-                response.respostanivel2 = resposta2 ? resposta2 : response.respostanivel2;
-                response.respostanivel3 = resposta3 ? resposta3 : response.respostanivel3;;
-                response.respostanivel4 = resposta4 ? resposta4 : response.respostanivel4;;
-                response.statusNivel2 = statusNivel2 ? statusNivel2 : response.statusNivel2;
-                response.statusNivel3 = statusNivel3 ? statusNivel3 : response.statusNivel3;
-                response.statusNivel4 = statusNivel4 ? statusNivel4 : response.statusNivel4;
+            response.pontos = pontos ? parseInt(pontos) : response.pontos;
+            response.xp = xp ? parseInt(xp): response.pontos;
+            response.respostanivel2 = resposta2 ? resposta2 : response.respostanivel2;
+            response.respostanivel3 = resposta3 ? resposta3 : response.respostanivel3;;
+            response.respostanivel4 = resposta4 ? resposta4 : response.respostanivel4;;
+            response.statusNivel2 = statusNivel2 ? statusNivel2 : response.statusNivel2;
+            response.statusNivel3 = statusNivel3 ? statusNivel3 : response.statusNivel3;
+            response.statusNivel4 = statusNivel4 ? statusNivel4 : response.statusNivel4;
+            if (nivel && nivel > response.nivel) {
+                response.nivel = nivel;
             }
+            
             
             
             response.save()
@@ -279,7 +284,7 @@ app.post('/login', async (req, res) => {
         }
 
         // Gera o token de autenticação
-        const token = jwt.sign({ id: user.id, email: user.email }, chaveToken, { expiresIn: '1h' });
+        const token = jwt.sign({ id: user.id, email: user.email }, chaveToken, { expiresIn: '4h' });
         const respostas = await Respostas.findAll({ where: { idusuario: user.id } })
         // Retorna o token como resposta
         console.log(token);
