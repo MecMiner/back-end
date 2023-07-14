@@ -1,5 +1,5 @@
 Criar arquivo package
-## npm init
+## npm install
 
 Gerencia requisições, rotas e URLS
-## npm install express
+## npm start
