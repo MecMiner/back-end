@@ -2,6 +2,7 @@ const express = require('express')
 const cors = require('cors');
 const jwt = require('jsonwebtoken');
 const app = express();
+const port = process.env.PORT || 8080;
 
 const Usuario = require('./models/Usuario');
 const Respostas = require('./models/Respostas');
@@ -297,6 +298,6 @@ app.post('/login', async (req, res) => {
 
 //Faz alteração na tabela de acordo com as models
 //Usuario.sync({alter: true});
-app.listen(8080, () => {
+app.listen(port, () => {
     console.log("Servidor iniciado na porta 8080: http://localhost:8080");
 });
