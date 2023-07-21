@@ -19,23 +19,11 @@ const Respostas = db.define('Respostas', {
     type: DataTypes.TEXT('medium'),
     allowNull: true
   },
-  feedback2: {
-    type: DataTypes.TEXT('medium'),
-    allowNull: true
-  },
   respostanivel3: {
     type: DataTypes.TEXT('medium'),
     allowNull: true
   },
-  feedback3: {
-    type: DataTypes.TEXT('medium'),
-    allowNull: true
-  },
   respostanivel4: {
-    type: DataTypes.TEXT('medium'),
-    allowNull: true
-  },
-  feedback4: {
     type: DataTypes.TEXT('medium'),
     allowNull: true
   },
