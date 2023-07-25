@@ -152,19 +152,22 @@ app.get('/respostas/:id', verifyToken, async (req, res) => {
                     jogou: false,
                     corrigido: false,
                     certo: false,
-                    erros: 0
+                    erros: 0,
+                    feedback: ""
                 },
                 statusNivel3: {
                     jogou: false,
                     corrigido: false,
                     certo: false,
-                    erros: 0
+                    erros: 0,
+                    feedback: ""
                 },
                 statusNivel4: {
                     jogou: false,
                     corrigido: false,
                     certo: false,
-                    erros: 0
+                    erros: 0,
+                    feedback: ""
                 },
                 respostanivel2: "",
                 respostanivel3: "",
