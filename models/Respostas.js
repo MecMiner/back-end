@@ -24,7 +24,7 @@ const Respostas = db.define('Respostas', {
     allowNull: true
   },
   respostanivel4: {
-    type: DataTypes.STRING(45),
+    type: DataTypes.TEXT('medium'),
     allowNull: true
   },
   statusNivel2: {
