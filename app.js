@@ -33,10 +33,10 @@ app.get('/', verifyToken,async (req, res) => {
         where: {
             id: idusuario,
         },
-    }).then((dataUsaurio) => {
+    }).then((dataUsuario) => {
         return res.json({
             erro: false,
-            dataUsuario: dataUsuario
+            dataUsuario
         })
     }).catch(() => {
         return res.json({
