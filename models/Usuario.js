@@ -28,7 +28,7 @@ const Usuario = db.define('Usuario', {
     allowNull: true,
     defaultValue: 0 
   },
-  XP: {
+  xp: {
     type: DataTypes.INTEGER,
     allowNull: true,
     defaultValue: 0 
@@ -54,5 +54,5 @@ const Usuario = db.define('Usuario', {
 });
 
 // Exporte o modelo do Sequelize
-Usuario.sync({alter: true});
+//Usuario.sync({alter: true});
 module.exports = Usuario;

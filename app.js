@@ -172,12 +172,6 @@ app.get('/respostas/:id', verifyToken, async (req, res) => {
                 respostanivel2: "",
                 respostanivel3: "",
                 respostanivel4: "",
-                nivel: 0,
-                pontos: 0,
-                xp: 0,
-                bomDesempenho: 0,
-                otimoDesempenho: 0,
-                colaboracao: 0
             })
             return res.json({
                 erro: true,
@@ -200,8 +194,7 @@ app.get('/respostas/:id', verifyToken, async (req, res) => {
 app.post('/respostas/:id', verifyToken, async (req, res) => {
     const { id } = req.params;
     const idusuario = req.user.id;
-    const { pontos, xp, bomDesempenho, otimoDesempenho, colaboracao, zerar, resposta2, resposta3, resposta4,statusNivel2, statusNivel3,statusNivel4, nivel } = req.body;
-    console.log(statusNivel2);
+    const {resposta2, resposta3, resposta4,statusNivel2, statusNivel3,statusNivel4, nivel } = req.body;
     await Respostas.findOne({
         where: {
             iddesafio: id,
@@ -214,11 +207,6 @@ app.post('/respostas/:id', verifyToken, async (req, res) => {
                 message: 'Dados não encontrado',
             })
         } else {
-            response.bomDesempenho = bomDesempenho ? response.bomDesempenho + 1: response.bomDesempenho;
-            response.otimoDesempenho = otimoDesempenho ? response.otimoDesempenho + 1: response.otimoDesempenho;
-            response.colaboracao = colaboracao ? response.colaboracao + 1: response.colaboracao;
-            response.pontos = pontos ? parseInt(pontos) : response.pontos;
-            response.xp = xp ? parseInt(xp): response.pontos;
             response.respostanivel2 = resposta2 ? resposta2 : response.respostanivel2;
             response.respostanivel3 = resposta3 ? resposta3 : response.respostanivel3;;
             response.respostanivel4 = resposta4 ? resposta4 : response.respostanivel4;;
@@ -261,6 +249,54 @@ app.post('/respostas/:id', verifyToken, async (req, res) => {
     })
 })
 
+app.post('/setPts', verifyToken, async (req, res) => {
+    const idusuario = req.user.id;
+    const { pontos, xp, bomDesempenho, otimoDesempenho, colaboracao} = req.body;
+    await Usuario.findOne({
+        where: {
+            id: idusuario,
+        },
+    }).then(async (response) => {
+        if (!response) {
+            return res.json({
+                erro: true,
+                message: 'Dados não encontrado',
+            })
+        } else {
+            response.bomDesempenho = bomDesempenho ? parseInt(bomDesempenho) : response.bomDesempenho;
+            response.otimoDesempenho = otimoDesempenho ? parseInt(otimoDesempenho) : response.otimoDesempenho;
+            response.colaboracao = colaboracao ? parseInt(colaboracao) : response.colaboracao;
+            response.pontos = pontos ? parseInt(pontos) : response.pontos;
+            response.xp = xp ? parseInt(xp): response.pontos;
+                   
+            response.save()
+            console.log(response);
+            await Usuario.update(
+                response,
+                {
+                    where: {
+                        idusuario: idusuario,
+                    },
+                }).then(() => {
+                    return res.json({
+                        error: false,
+                        mensagem: "valor inserido"
+
+                    });
+                }).catch((e) => {
+                    return res.json({
+                        error: true,
+                        mensagem: "valor não inserido"
+                    });
+                })
+        }
+    }).catch(() => {
+        return res.status(400).json({
+            erro: true,
+            mensagem: "Usuario não encontrado"
+        })
+    })
+})
 
 
 app.post('/login', async (req, res) => {
