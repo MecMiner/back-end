@@ -36,7 +36,7 @@ app.get('/', verifyToken,async (req, res) => {
     }).then((dataUsaurio) => {
         return res.json({
             erro: false,
-            dataUsuario
+            dataUsuario: dataUsuario
         })
     }).catch(() => {
         return res.json({
