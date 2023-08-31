@@ -59,26 +59,6 @@ const Respostas = db.define('Respostas', {
     set(value) {
       this.setDataValue('statusNivel4', JSON.stringify(value));
     },
-  },
-  pontos: {
-    type: DataTypes.INTEGER,
-    allowNull: true
-  },
-  xp: {
-    type: DataTypes.INTEGER,
-    allowNull: true
-  },
-  bomDesempenho: {
-    type: DataTypes.INTEGER,
-    allowNull: true
-  },
-  otimoDesempenho: {
-    type: DataTypes.INTEGER,
-    allowNull: true
-  },
-  colaboracao: {
-    type: DataTypes.INTEGER,
-    allowNull: true
   }
 }, {
   tableName: 'respostas',

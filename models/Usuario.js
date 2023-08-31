@@ -23,13 +23,30 @@ const Usuario = db.define('Usuario', {
     type: DataTypes.STRING(50),
     allowNull: false
   },
-  pontuacao: {
+  pontos: {
     type: DataTypes.INTEGER,
-    allowNull: true
+    allowNull: true,
+    defaultValue: 0 
   },
   XP: {
     type: DataTypes.INTEGER,
-    allowNull: true
+    allowNull: true,
+    defaultValue: 0 
+  },
+  colaboracao: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    defaultValue: 0 
+  },
+  bomDesempenho: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    defaultValue: 0 
+  },
+  otimoDesempenho: {
+    type: DataTypes.INTEGER,
+    allowNull: true,
+    defaultValue: 0 
   }
 }, {
   tableName: 'usuario', // Nome da tabela no banco de dados (se necessário)
@@ -37,4 +54,5 @@ const Usuario = db.define('Usuario', {
 });
 
 // Exporte o modelo do Sequelize
+Usuario.sync({alter: true});
 module.exports = Usuario;

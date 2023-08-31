@@ -172,9 +172,9 @@ app.get('/respostas/:id', verifyToken, async (req, res) => {
                 respostanivel2: "",
                 respostanivel3: "",
                 respostanivel4: "",
+                nivel: 0,
                 pontos: 0,
                 xp: 0,
-                nivel: 0,
                 bomDesempenho: 0,
                 otimoDesempenho: 0,
                 colaboracao: 0
