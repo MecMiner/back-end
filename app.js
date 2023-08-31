@@ -27,8 +27,13 @@ app.use((req, res, next) => {
     next();
 })
 
-app.get('/', async (req, res) => {
-    await Usuario.findAll().then((dataUsaurio) => {
+app.get('/', verifyToken,async (req, res) => {
+    const idusuario = req.user.id;
+    await Usuario.findOne({
+        where: {
+            id: idusuario,
+        },
+    }).then((dataUsaurio) => {
         return res.json({
             erro: false,
             dataUsaurio
@@ -36,26 +41,60 @@ app.get('/', async (req, res) => {
     }).catch(() => {
         return res.json({
             erro: true,
-            mensagem: "Usuarios não cadastrados"
+            mensagem: "Usuario não cadastrado"
         })
     })
 })
 
-app.post('/setPontos', verifyToken, async (req, res) => {
-    const { pontos, iddesafio } = req.body;
+app.post('/setPts', verifyToken, async (req, res) => {
     const idusuario = req.user.id;
-    await Respostas.update({ pontos }, { where: { iddesafio, idusuario: idusuario } }).then(() => {
-        return res.json({
-            error: false,
-            mensagem: "valor inserido"
-        });
-    }).catch((error) => {
+    const { pontos, xp, bomDesempenho, otimoDesempenho, colaboracao} = req.body;
+    await Usuario.findOne({
+        where: {
+            id: idusuario,
+        },
+    }).then(async (response) => {
+        if (!response) {
+            return res.json({
+                erro: true,
+                message: 'Dados não encontrado',
+            })
+        } else {
+            response.bomDesempenho = bomDesempenho ? parseInt(bomDesempenho) : response.bomDesempenho;
+            response.otimoDesempenho = otimoDesempenho ? parseInt(otimoDesempenho) : response.otimoDesempenho;
+            response.colaboracao = colaboracao ? parseInt(colaboracao) : response.colaboracao;
+            response.pontos = pontos ? parseInt(pontos) : response.pontos;
+            response.xp = xp ? parseInt(xp): response.pontos;
+                   
+            response.save()
+            console.log(response);
+            await Usuario.update(
+                response,
+                {
+                    where: {
+                        idusuario: idusuario,
+                    },
+                }).then(() => {
+                    return res.json({
+                        error: false,
+                        mensagem: "valor inserido"
+
+                    });
+                }).catch((e) => {
+                    return res.json({
+                        error: true,
+                        mensagem: "valor não inserido"
+                    });
+                })
+        }
+    }).catch(() => {
         return res.status(400).json({
-            error: true,
-            mensagem: error
+            erro: true,
+            mensagem: "Usuario não encontrado"
         })
-    });
+    })
 })
+
 
 app.post('/verify-token', (req, res) => {
     const token = req.headers.authorization;
@@ -132,7 +171,6 @@ app.get('/desafio3/:id', async (req, res) => {
         })
     })
 })
-
 
 
 app.get('/respostas/:id', verifyToken, async (req, res) => {
