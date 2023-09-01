@@ -210,6 +210,7 @@ app.get('/respostas/:id', verifyToken, async (req, res) => {
                 respostanivel2: "",
                 respostanivel3: "",
                 respostanivel4: "",
+                nivel : 1,
             })
             return res.json({
                 erro: true,
