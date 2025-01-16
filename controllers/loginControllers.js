@@ -1,5 +1,7 @@
 const { chaveToken } = require("../config");
+const jwt = require('jsonwebtoken');
 const Usuario = require("../models/Usuario");
+const Respostas = require("../models/Respostas");
 
 exports.loginPost = async (req, res) => {
     const { email, senha } = req.body;
