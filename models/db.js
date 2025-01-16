@@ -1,8 +1,9 @@
 const { Sequelize } = require('sequelize');
 
-const sequelize = new Sequelize('heroku_1b0a3702f94d3e4', 'bf5527b4278548', 'ccd84a87', {
-    host: 'us-cdbr-east-06.cleardb.net',
-    dialect: 'mysql'
+const sequelize = new Sequelize('um30sck81weh5sur', 'bw5s260i42hh87z1', 'c2o6ec9pdivi2qgn', {
+    host: 'qbhol6k6vexd5qjs.cbetxkdyhwsb.us-east-1.rds.amazonaws.com',
+    dialect: 'mysql',
+    port: 3306
   });
 
 sequelize.authenticate().then(() => {
