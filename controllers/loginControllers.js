@@ -9,43 +9,31 @@ exports.loginPost = async (req, res) => {
     try {
         // Encontra o usuário no banco de dados com base no email fornecido
         const user = await Usuario.findOne({ where: { email } });
-        console.log(user);
-
         if (!user) {
-            console.log("email invalido")
-            return res.status(401).json({ message: 'Usuário inválido' });
+            return res.status(401).json({error: true, message: 'Incorrect email or password' });
         }
-        console.log(user.senha);
-        console.log(senha);
         // Verifica se a senha fornecida corresponde à senha armazenada no banco de dados
         const passwordMatch = senha === user.senha;
-
-        console.log(passwordMatch);
-
         if (!passwordMatch) {
-            console.log("senha invalido")
-            return res.status(401).json({ message: 'Credenciais inválidas' });
+            return res.status(401).json({error: true, message: 'Incorrect email or password' });
         }
 
         // Gera o token de autenticação
         const token = jwt.sign({ id: user.id, email: user.email }, chaveToken, { expiresIn: '4h' });
         const respostas = await Respostas.findAll({ where: { idusuario: user.id } })
         // Retorna o token como resposta
-        console.log(token);
-        res.status(200).json({ token, user: { name: user.nome }, respostas });
+        res.status(200).json({error: false, token});
     } catch (error) {
         console.error(error);
-        res.status(500).json({ message: 'Erro ao processar a requisição' });
+        res.status(500).json({error: true, message: 'Error processing request' });
     }
 }
 
 
 exports.getLogin = async (req, res) => {
     const idusuario = req.user.id;
-    await Usuario.findOne({
-        where: {
-            id: idusuario,
-        },
+    await Usuario.findByPk(idusuario, {
+        attributes: { exclude: ['senha', 'id'] }
     }).then((dataUsuario) => {
         return res.json({
             erro: false,
@@ -54,7 +42,7 @@ exports.getLogin = async (req, res) => {
     }).catch(() => {
         return res.json({
             erro: true,
-            mensagem: "Usuario não cadastrado"
+            mensagem: "Unregistered user"
         })
     })
 }

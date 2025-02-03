@@ -8,7 +8,6 @@ const verifyToken = require('./middleware/verifyToken');
 const routerLogin = require('./routes/loginRoutes');
 const routerRespostas = require('./routes/respostasRoutes');
 const routerDesafios = require('./routes/desafiosRoutes');
-const routerToken = require('./routes/tokenRouter');
 
 
 app.use(cors());
@@ -39,11 +38,11 @@ app.post('/setPts', verifyToken, async (req, res) => {
                 message: 'Dados não encontrado',
             })
         } else {
-            response.bomDesempenho = bomDesempenho ? parseInt(bomDesempenho) : response.bomDesempenho;
-            response.otimoDesempenho = otimoDesempenho ? parseInt(otimoDesempenho) : response.otimoDesempenho;
-            response.colaboracao = colaboracao ? parseInt(colaboracao) : response.colaboracao;
-            response.pontos = pontos ? parseInt(pontos) : response.pontos;
-            response.xp = xp ? parseInt(xp): response.pontos;
+            response.bomDesempenho += bomDesempenho ? parseInt(bomDesempenho) : 0;
+            response.otimoDesempenho += otimoDesempenho ? parseInt(otimoDesempenho) : 0;
+            response.colaboracao += colaboracao ? parseInt(colaboracao) : 0;
+            response.pontos +=  pontos ? parseInt(pontos) : 0;
+            response.xp += xp ? parseInt(xp): 0;
                    
             response.save()
             console.log(response);
@@ -75,7 +74,6 @@ app.post('/setPts', verifyToken, async (req, res) => {
 })
 
 
-app.use('/', routerToken)
 app.use('/', routerDesafios)
 app.use('/', routerRespostas)
 app.use('/', routerLogin)
