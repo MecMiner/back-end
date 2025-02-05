@@ -2,13 +2,17 @@ const {Sequelize, DataTypes } = require('sequelize');
 const db = require('./db');
 
 const Respostas = db.define('Respostas', {
+  idRespostas: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true
+  },
   iddesafio: {
     type: DataTypes.INTEGER,
-    primaryKey: true
+    allowNull: true,
   },
   idusuario: {
     type: DataTypes.INTEGER,
-    primaryKey: true,
     allowNull: true
   },
   nivel :{
